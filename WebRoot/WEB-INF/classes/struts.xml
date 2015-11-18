@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>   
+
+<!DOCTYPE struts PUBLIC    
+
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"    
+
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+
+
+<struts>
+	<!-- 全局变量，设定上传文件最大为100M -->
+	<constant name="struts.multipart.maxSize" value="104857600"></constant>
+	<package name="struts2" namespace="/" extends="struts-default">
+		 <!-- 特别注意：使用struts2实现下载功能时，不能为action指定method属性，即method="getDownLoad"，
+		 这样struts2会默认将ByteArrayInputStream强制转成String类型 ，即会报错：
+		 java.lang.ClassCastException: java.io.ByteArrayInputStream cannot be cast to java.lang.String。
+		 struts2通过result中的param属性的inputName值来定义使用 哪一个方法，该例中值为downLoad，
+		 struts2会默认将其转换成getDownLoad()方法，然后执行action中的getDownLoad()方法 -->
+		 <action name="downLoad" class="action.UploadUtilAction">
+		  <!-- type=stream表示返回值类型为流类型，在文件下载时经常使用 -->
+		 	<result name="success" type="stream">
+		 		<!-- 设置流的编码方式 -->
+				<param name="contentType">application/octet-stream;charset=ISO8859-1</param>
+				 <!-- attachment表示往response里附加一个文件，如果为inline，表示内嵌显示一个文件；
+                	filename为固定写法，值是要附加或内嵌的文件名称，即在下载时另存为的默认名称，该例中的fileRealName为文件的名称，
+                	也可以静态指定filename="image123.jpg"
+                 -->
+				<param name="contentDisposition">attachment;filename="${fileRealName}"</param>
+				<!-- inputName是struts2内部指定的名称，值是返回流类型的方法名称。
+                	在本例中action中的下载文件的方法的名称为 getDownLoad,因此inputName为除去get后将首字母变小写后的字符串，即downLoad -->
+				<param name="inputName">downLoad</param>
+				<param name="bufferSize">4096</param>
+			</result>
+		 </action>
+		 
+		 <!-- 这里的“*”是struts2的通配符的写法，表示前台传来的任意url都可以执行此action，*怎么定义视情况而定，也可以写多个*，
+		method中的{1}表示action的name中的第一个*号的内容,action的result的返回页面URL也可以用{1}来表示，例如/{1}.jsp。
+		以下面的例子为例，如果action的name="fileUpload",则{1}就是fileUpload，还可以指定返回页面的URL为/{1}.jsp，则将返回到fileUpload.jsp
+		 -->
+		<action name="file_*" class="action.UploadUtilAction" method="{1}"></action>
+		
+	</package>
+</struts>   

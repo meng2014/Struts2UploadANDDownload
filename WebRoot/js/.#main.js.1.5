@@ -1,0 +1,570 @@
+jQuery(document).ready(function() {
+	$(".css-tabs a").click(function() {
+		$(this).parent().siblings().children("a").removeClass("current");
+		$(this).addClass("current");
+	});
+});
+
+function checkForm(form) {
+	var queryways = form.queryways.value;
+	var path = document.getElementById("path").value;
+	if (queryways.match(/^\s*$/)) {
+		document.getElementById("msg").innerHTML = "<font color='red'>请选择查询方式!</font>";
+		form.queryways.style.border = "1px solid red";
+		document.getElementById("fra").style.display = "none";
+		return false;
+	} else {
+		form.queryways.style.border = "";
+	}
+	var keyword = form.keyword;
+	if (keyword.value.match(/^\s*$/)) {
+		document.getElementById("msg").innerHTML = "<font color='red'>请输入关键字!</font>";
+		document.getElementById("fra").style.display = "none";
+		return false;
+	}
+	keyword.value=trim(keyword.value);
+	if (queryways == "1") {
+		queryService
+				.isExistCompanyName(
+						keyword.value,
+						function(data) {
+							if (data != "false") {
+								document.getElementById("msg").innerHTML = "";
+								document.getElementById("ids").value=data;
+								form.action = path
+										+ "/global_query.action";
+								form.target = "me";
+								form.submit();
+								document.getElementById("fra").style.display = "";
+								return true;
+							} else{
+								document.getElementById("msg").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+								document.getElementById("fra").style.display = "none";
+								return false;
+							}
+						});
+	} else if (queryways == "2") {
+		queryService
+				.isExistDepartmentName(
+						keyword.value,
+						function(data) {
+							if (data !="false") {
+								document.getElementById("msg").innerHTML = "";
+								document.getElementById("ids").value=data;
+								form.action = path
+										+ "/global_query.action";
+								form.target = "me";
+								form.submit();
+								document.getElementById("fra").style.display = "";
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msg").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+								document.getElementById("fra").style.display = "none";
+								return false;
+							}
+						});
+	} 
+//else if (queryways == "3") {
+//		queryService
+//				.isExistCityDepartmentName(
+//						keyword.value,
+//						function(data) {
+//							if (data == "true") {
+//								document.getElementById("msg").innerHTML = "";
+//								form.action = path
+//										+ "/global_query.action";
+//								form.target = "me";
+//								form.submit();
+//								document.getElementById("fra").style.display = "";
+//								return true;
+//							} else if (data == "false") {
+//								document.getElementById("msg").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+//								window.parent.dmMain.location.href=path+"/welcome.jsp";
+//								document.getElementById("fra").style.display = "none";
+//								return false;
+//							}
+//						});
+//	} else if (queryways == "4") {
+//		queryService
+//				.isExistCountryDepartmentName(
+//						keyword.value,
+//						function(data) {
+//							if (data == "true") {
+//								document.getElementById("msg").innerHTML = "";
+//								form.action = path
+//										+ "/global_query.action"
+//								form.target = "me";
+//								form.submit();
+//								document.getElementById("fra").style.display = "";
+//								return true;
+//							} else if (data == "false") {
+//								document.getElementById("msg").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+//								window.parent.dmMain.location.href=path+"/welcome.jsp";
+//								document.getElementById("fra").style.display = "none";
+//								return false;
+//							}
+//						});
+//	} 
+	else if (queryways == "5") {
+		queryService
+				.isExistOrganizationName(
+						keyword.value,
+						function(data) {
+							if (data != "false") {
+								document.getElementById("msg").innerHTML = "";
+								document.getElementById("ids").value=data;
+								form.action = path
+										+ "/organization_query.action";
+								form.target = "dmMain";
+								form.submit();
+                                document.getElementById("fra").style.display = "none";
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msg").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+								document.getElementById("fra").style.display = "none";
+								return false;
+							}
+						});
+	} else if (queryways == "6") {
+		queryService
+				.isExistRescueteamName(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msg").innerHTML = "";
+								form.action = path
+										+ "/rescueteam_query.action";
+								form.target = "dmMain";
+								form.submit();
+                                document.getElementById("fra").style.display = "none";
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msg").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+								document.getElementById("fra").style.display = "none";
+								return false;
+							}
+						});
+	} else if (queryways == "7") {
+		queryService
+				.isExistSpecialistName(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msg").innerHTML = "";
+								form.action = path
+										+ "/specialist_query.action";
+								form.target = "dmMain";
+								form.submit();
+								document.getElementById("fra").style.display = "none";
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msg").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+								document.getElementById("fra").style.display = "none";
+								return false;
+							}
+						});
+	} else if (queryways == "8") {
+		queryService
+				.isExistEquipageName(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msg").innerHTML = "";
+								form.action = path
+										+ "/equipage_query.action";
+								form.target = "dmMain";
+								form.submit();
+                                document.getElementById("fra").style.display = "none";
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msg").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+								document.getElementById("fra").style.display = "none";
+								return false;
+							}
+						});
+	} else if (queryways == "9") {
+		queryService
+				.isExistGoodsName(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msg").innerHTML = "";
+								form.action = path
+										+ "/goods_query.action";
+								form.target = "dmMain";
+								form.submit();
+                                document.getElementById("fra").style.display = "none";
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msg").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+								document.getElementById("fra").style.display = "none";
+								return false;
+							}
+						});
+	} else if (queryways == "10") {
+		queryService
+				.isExistBinancsName(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msg").innerHTML = "";
+								form.action = path
+										+ "/binancs_query.action";
+								form.target = "dmMain";
+								form.submit();
+								document.getElementById("fra").style.display = "none";
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msg").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+								document.getElementById("fra").style.display = "none";
+								return false;
+							}
+						});
+	} else if (queryways == "11") {
+		queryService
+				.isExistPlanName(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msg").innerHTML = "";
+								form.action = path
+										+ "/plan_query.action";
+								form.target = "dmMain";
+								form.submit();
+								document.getElementById("fra").style.display = "none";
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msg").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+								document.getElementById("fra").style.display = "none";
+								return false;
+							}
+						});
+	} else if (queryways == "12") {
+		queryService
+				.isExistTerraceName(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msg").innerHTML = "";
+								form.action = path
+										+ "/terrace_query.action";
+								form.target = "dmMain";
+								form.submit();
+								document.getElementById("fra").style.display = "none";
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msg").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+								document.getElementById("fra").style.display = "none";
+								return false;
+							}
+						});
+	} else if (queryways == "13") {
+		queryService
+				.isExistStorageName(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msg").innerHTML = "";
+								form.action = path
+										+ "/storage_query.action";
+								form.target = "dmMain";
+								form.submit();
+								document.getElementById("fra").style.display = "none";
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msg").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+								document.getElementById("fra").style.display = "none";
+								return false;
+							}
+						});
+	}
+	return false;
+}
+function checkCurrentPage(input, totalPages) {
+	if (input.match(/^\D*$/)) {
+		alert("只能输入数字");
+		document.getElementById("jumpPageBox").value = document
+				.getElementById("pages").value;
+		document.getElementById("jumpPageBox").focus();
+	} else if (input > totalPages || parseInt(input) <= 0) {
+		alert("对不起,你输入的页码有误!");
+		document.getElementById("jumpPageBox").value = document
+				.getElementById("pages").value;
+		document.getElementById("jumpPageBox").focus();
+	}
+}
+function trim(s)   
+{   
+    try  
+    {   
+        return s.replace(/(^\s*)|(\s*$)/g,"");
+   
+   }   
+    catch(e)   
+    {   
+        return s;   
+    }   
+}  
+$(document).ready(function(){
+	$("table tr[bgcolor]").mouseover(function(){
+		$(this).css("background","rgb(175,193,216)");
+	}).mouseout(function (){
+		$(this).css("background","#FFFFFF");
+	});
+	
+});
+
+$(function(){
+	    var $div_li =$("ul.tab_menu li");
+	    $div_li.click(function(){
+			$(this).addClass("current")            //当前<li>元素高亮
+				   .siblings().removeClass("current");  //去掉其它同辈<li>元素的高亮
+            var index =  $div_li.index(this);  // 获取当前点击的<li>元素 在 全部li元素中的索引。
+			$("div.tab_box > div")   	//选取子节点。不选取子节点的话，会引起错误。如果里面还有div 
+					.eq(index).show()   //显示 <li>元素对应的<div>元素
+					.siblings().hide(); //隐藏其它几个同辈的<div>元素
+		}).hover(function(){
+			$(this).addClass("hover");
+		},function(){
+			$(this).removeClass("hover");
+		})
+	})
+	
+
+	
+
+function checkShenhe(form){
+	
+	var queryways = form.queryways2.value;
+	var path = document.getElementById("path2").value;
+	if (queryways.match(/^\s*$/)) {
+		
+		document.getElementById("msgname").innerHTML = "<font color='red'>请选择查询方式!</font>";
+		form.queryways2.style.border = "1px solid red";
+		return false;
+	}else {
+		form.queryways2.style.border = "";
+	}
+	var keyword = form.keyword;
+	if (keyword.value.match(/^\s*$/)) {
+		document.getElementById("msgname").innerHTML = "<font color='red'>请选择审核方式!</font>";
+		return false;
+	}
+	if (queryways == "1") {
+		queryService
+				.isExistOrganizationTest(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msgname").innerHTML = "";
+								form.action = path
+										+ "/organization_query.action";
+								form.target = "dmMain";
+								form.submit();
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msgname").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+								
+								return false;
+							}
+						});
+	} else if (queryways == "2") {
+		queryService
+				.isExistRescueteamTest(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msgname").innerHTML = "";
+								form.action = path
+										+ "/rescueteam_query.action";
+								form.target = "dmMain";
+								form.submit();
+                              
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msgname").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+							
+								return false;
+							}
+						});
+	}else if (queryways == "3") {
+		queryService
+				.isExistSpecialistTest(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msgname").innerHTML = "";
+								form.action = path
+										+ "/specialist_query.action";
+								form.target = "dmMain";
+								form.submit();
+							
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msgname").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+								return false;
+							}
+						});
+	} else if (queryways == "4") {
+		queryService
+				.isExistEquipageTest(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msgname").innerHTML = "";
+								form.action = path
+										+ "/equipage_query.action";
+								form.target = "dmMain";
+								form.submit();
+                               
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msgname").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+							
+								return false;
+							}
+						});
+	} else if (queryways == "5") {
+		queryService
+				.isExistGoodsTest(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msgname").innerHTML = "";
+								form.action = path
+										+ "/goods_query.action";
+								form.target = "dmMain";
+								form.submit();
+                              
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msgname").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+							
+								return false;
+							}
+						});
+	} else if (queryways == "6") {
+		queryService
+				.isExistBinancsTest(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msgname").innerHTML = "";
+								form.action = path
+										+ "/binancs_query.action";
+								form.target = "dmMain";
+								form.submit();
+							
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msgname").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+							
+								return false;
+							}
+						});
+	} else if (queryways == "7") {
+		queryService
+				.isExistPlanTest(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msgname").innerHTML = "";
+								form.action = path
+										+ "/plan_query.action";
+								form.target = "dmMain";
+								form.submit();
+							
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msgname").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+							
+								return false;
+							}
+						});
+	} else if (queryways == "8") {
+		queryService
+				.isExistTerraceTest(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msgname").innerHTML = "";
+								form.action = path
+										+ "/terrace_query.action";
+								form.target = "dmMain";
+								form.submit();
+							
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msgname").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+							
+								return false;
+							}
+						});
+	} else if (queryways == "9") {
+		queryService
+				.isExistStorageTest(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msgname").innerHTML = "";
+								form.action = path
+										+ "/storage_query.action";
+								form.target = "dmMain";
+								form.submit();
+								
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msgname").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+								
+								return false;
+							}
+						});
+	}
+	else if (queryways == "10") {
+		queryService
+				.isExistUserTest(
+						keyword.value,
+						function(data) {
+							if (data == "true") {
+								document.getElementById("msgname").innerHTML = "";
+								form.action = path
+										+ "/user_query.action";
+								form.target = "dmMain";
+								form.submit();
+								
+								return true;
+							} else if (data == "false") {
+								document.getElementById("msgname").innerHTML = "<font color='red'>对不起,没有找到相关信息!</font>";
+								window.parent.dmMain.location.href=path+"/welcome.jsp";
+								
+								return false;
+							}
+						});
+	}
+	
+	return false;
+
+}
+
+
+
